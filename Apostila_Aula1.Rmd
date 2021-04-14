@@ -1,0 +1,184 @@
+---
+title: "Apostila Aula 1"
+author: "Bruno Marcelino"
+date: "26/05/2020"
+output:
+  html_document: default
+  word_document: default
+---
+# Introdução e Considerações Iniciais
+
+A linguagem R pode ser aplicada nas mais diversas áreas e para os mais diversos fins, tais como: Pesquisa Científica, Business Analytics, Desenvolvimento de Software, Relatórios Estatísticos, Econométrica e Análise Financeira, Ciência Sociais e Big Data Analytics. Ela tem grande presença na comunidade científica e diversos pesquisadores que desenvolvem um modelo preditivo ou pesquisa utilizando linguagem R, compartilham o código como open source de maneira que o trabalho possa ser reproduzido e as pesquisas conduzidas por outros indivíduos ao redor do mundo. Fonte: <http://datascienceacademy.com.br/blog/linguagem-r-por-que-e-hora-de-aprender/>
+
+### R: O que significa uma **linguagem** de programação?
+
+A linguagem de programação é um método padronizado, formado por um conjunto de regras sintáticas e semânticas, de implementação de um código fonte - que pode ser compilado e transformado em um programa de computador, ou usado como script interpretado - que informará instruções de processamento ao computador. Fonte: <https://pt.wikipedia.org/wiki/Linguagem_de_programa%C3%A7%C3%A3o>
+
+### RStudio e IDEs
+
+Existem diversas IDEs (Ambiente de Desenvolvimento Integrado, em português) utilizadas para facilitar o trabalho do programador. No R, a mais conveniente a se utilizar é conhecida como RStudio, que possui diversos recursos e ferramentas interessantes a serem exploradas. 
+
+### Downloads
+
+Em primeiro lugar, é necessário baixar a linguagem R em si e também o RStudio, em seus respectivos sites 
+
+Download RStudio: <https://rstudio.com/products/rstudio/download/#download>
+
+Download R: <https://cran.r-project.org/bin/windows/base/>
+
+# Conhecendo o RStudio
+
+![](D:/Imagens/Screenshot_5.png)
+
+* Canto superior direito: contém seu espaço de trabalho e também um histórico dos comandos
+que você utilizou anteriormente.
+
+* Canto inferior direito: contém diversas funções utilizáveis.
+    + Em `files` podemos abrir arquivos e navegar entre as pastas de seu computador
+    + Em `plots`, podemos visualizar gráficos que você gerou, e manipulá-los
+    + Em `packages`, podemos ver os pacotes já baixados no seu computador 
+    + Em `help`, podemos pesquisar a respeito de qualquer tipo de função, comando, erro etc. Esse painel é muito útil e contém explicações a respeito de grande parte dos recursos da linguagem e da plataforma.
+
+\n
+* Canto esquerdo: é onde a ação acontece. Ele é chamado de Console. Toda vez que você iniciar o RStudio, ele terá o mesmo texto no topo do console dizendo qual versão do R você está rodando. Abaixo desta informação está o comando de linha. Como o nome sugere, ele interpreta qualquer entrada como um comando a ser executado. Inicialmente, a interação com o R é feita principalmente pela digitação de comandos e a interpretação dos resultados.
+
+Quando você digita uma expressão e tecla `Enter`, o Console automaticamente retorna um resultado ou erro. Ex:
+
+```{r}
+
+10+10
+
+``` 
+### Criando um Script
+
+Como qualquer linguagem de programação, pode-se salvar seu trabalho em Scripts, que são basicamente um conjunto de linhas de código, que podem ser executadas de uma vez, a qualquer momento. 
+
+Para criar um novo Script, basta clicar em `File` > `New File` > `R Script`
+
+Ao clicar no ícone de salvamento (ou `Ctrl + S`, no teclado), podemos escolher onde iremos salvar nosso script, que é um arquivo qualquer com a extensão `.R` (isso "explica ao computador" que o arquivo deve ser lido na linguagem R).
+
+Para fazer o console ler todo o Script, pode-se teclar `Ctrl + Shift + Enter`, ou simplesmente clicar em `Run`. 
+
+### Pacotes 
+
+Em conjunto com a instalação do R, são baixados diversos Pacotes com funcionalidades pré-definidas a serem utilizadas 
+
+Algumas funções só podem ser acessadas por meio de pacotes específicos, que não são baixados em conjunto com o R. Portanto será necessário baixá-los separadamente. Uma vez baixados, os pacotes ficam sempre em seu computador. 
+
+Agora iremos baixar um pacote importante a ser utilizado no prosseguimento do curso:
+
+```{r eval = FALSE}
+install.packages("dslabs")
+```
+
+**Obs:** É conveniente que se crie um script que contenha somente os pacotes que você geralmente utilize. Caso você queira utilizar seus códigos em outro computador, basta rodá-lo, e assim todas os os pacotes necessários são baixados. 
+
+Para que sejam utilizados em um script, os pacotes baixados separadamente devem ser acessados mediante outra função importante. Ela **deve** estar presente nesse script, geralmente nas linhas iniciais. 
+
+```{r eval = FALSE} 
+library("dslabs")
+```
+
+Todos os pacotes instalados podem ser acessados por meio da função
+
+```{r eval = FALSE}
+installed.packages()
+```
+
+# Objetos
+
+Um objeto é qualquer coisa que pode ser associado (e armazenado) em uma variável. 
+
+Assim, uma instrução do tipo ``x <- 1`` ou ``x = 1``
+
+atribui a x o valor (inteiro) 1, e é perfeitamente válido reatribuir:
+
+```{r}
+x <- 2.5
+```
+
+\n 
+Para acessar o valor guardado em uma variável pelo Console, pode-se tanto utilizar a função `print` quanto simplesmente digitar o nome da variável 
+
+```{r}
+x
+print(x)
+``` 
+
+Com isso, já podemos generalizar algumas expressões como por exemplo
+
+```{r}
+x <- 1
+y = 2^(3*x)
+print(y)
+```
+
+# Funções 
+
+Funções são objetos que requerem argumentos para gerar um resultado. Junto com o pacote inicial do R, há uma infinidade de funções predefinidas a serem utilizadas. Exemplos:
+
+```{r}
+sqrt(49)
+log(x)
+factorial(5)
+```
+
+Usando a função `help(função)`, podemos ver a explicação da função utilizada, e usando `args(função)` são mostrados os argumentos requisitados pela função para gerar o resultado. Uma mesma função pode dar seu resultado com a utilização de uma quantidade menor de argumentos. Ex:
+
+```{r}
+print(x)
+log(x) #calcula o log de x na base "e"(2,72), predefinida
+log(x,2) #calcula o log de x na base 2
+```
+
+Note que podemos salvar os resultados de uma função em outras variáveis 
+
+```{r}
+x <- exp(1) #número de Euler
+y <- log(x) #logaritmo de x na base Euler 
+y
+```
+
+
+* Existem também diversas bases de dados incluídas no pacote inicial do R, e em outros pacotes. Elas podem ser baixadas simplesmente utilizando o comando `data()`.Ex:
+
+```{r}
+library("dslabs")
+data(murders) #banco de dados com o número de assassinatos por estado dos EUA
+summary(murders)
+```
+
+
+**Obs:** Para escrever comentários que não devem ser interpretados como variáveis ou objetos, basta colocar um `#` logo atrás do seu conteúdo
+
+### Exercícios
+
+1. Qual a soma dos números 1 a 1000? Dica: a fórmula da soma dos inteiros de 1 até "n" é definida por: 
+
+$$
+n(n+1)/2
+$$
+
+2. Note que:
+```{r}
+n <- 10
+x <- seq(1, n)
+sum(x)
+```
+
+Baseado no resultado, o que você acha que as funções `seq` e `sum` fazem?
+
+a. `sum` cria uma lista de números e `seq` soma todos eles
+b. `seq` cria uma lista de números e `sum` soma todos eles
+c. `seq` cria uma lista aleatória de números e `sum` calcula a soma de 1 até 1000
+d. `sum` sempre retorna o mesmo número
+
+\n
+3. Use somente uma linha de código para programar o logaritmo, na base 10, da raiz quadrada de 100  
+\n
+4. Qual dos resultados sempre será o valor atribuído em x?
+
+a. `log(10^x)`
+b. `log10(x^10)`
+c. `log(exp(x))`
+d. `exp(log(x, base = 2))`

@@ -1,0 +1,224 @@
+INTRODUÇÃO AO R - CURSO UFMG 2019 (Prof. Sabrina Espinele) 
+Anotações: Bruno Marcelino
+Data: 27/09/2019
+
+---
+Download: Software R ---> RStudio (opensource) 
+
+Extensão do script: .R (pode ser editado em qualquer bloco de notas)
+
+Instalar pacotes: install.packages(pacote)
+Usar pacotes: library("pacote") ou require("pacote")
+Mostrar pacotes já utilizados: library()
+
+Conceitos e Funcionalidades:
+
+- Script: código de comandos (superior a esquerda)
+- Prompt: interpreta a linha de comando (inferior esquerdo) 
+- Sessão: diretório (pasta) de trabalho em que se está
+
+1. Ctrl R ou Ctrl Enter: roda o script 
+2. #: comentários ou explicações 
+3. Vírgula: vetores; Ponto: decimais
+
+R como calculadora: 
+1. Logaritmo: log(100) 
+2. Raiz quadrada: sqrt(100) 
+3. Operações básicas: + - * / ^
+4. Conjuntos: 1:4 = números de 1 a 4 (lista)
+
+Programação
+
+- Atribuir valores a variáveis
+
+b <- 10 ou b = 10 : variável b = valor 10 
+
+if = se {condição} 
+
+else = caso contrário 
+
+plot (a) - gera um gráfico 
+
+c = cria um vetor (uma constante multidimensional) - concatena os valores (juntar) 
+
+x = vector("classe", length=tamanho) length = dimensões, vector = vetor vazio para ser preenchido depois
+ 
+x[4] = 5 - coloca o numero 5 na quarta dimensão (espaço) do vetor 
+
+ls() = lista as variáveis 
+rm(i) = remove a variável i 
+rm(list=ls()) = remove todas as variáveis 
+ 
+
+?função = pedir ajuda 
+
+q() = sair do r
+
+[1] - há um elemento nesse vetor 
+
+rep(vetor,10) - replica elementos de um vetor ou lista. Ex: replicará o vetor "vetor" 10 vezes) 
+
+x = (-) seq(from=1, to= 100, by= 0.5) - sequencia de 1 a 100 de 0,5 em 0,5  
+
+1L =  definir um número inteiro
+
+NaN = not a number
+
+Números matemáticos: pi, exp, etc
+
+a=termo para mudar
+a=sub("termo que você quer mudar", "por qual você quer mudar"
+ou
+sub("termo que quer mudar", "por qual quer mudar", a) 
+
+== - testando uma condição (testes lógicos) 
+
+class(nome do vetor) - mostra a classe do vetor 
+
+{ ou } = begin (indica onde a função começa e termina
+
+for ( i in 1:15) 
+i = número que vai variar de 1 a 15 de forma  que se queira
+
+loop 
+
+print(a) = mostrar resultado a 
+
+print(paste("texto", variável, "texto)) = mostrar resultado em meio a textos
+
+if (condição==condição) 
+    {
+    (acontecimento) 
+    }
+
+mean = média aritmética
+
+sd = desvio-padrão
+
+cbind(x,y) cria coleções de vetores em colunas
+rbind(x,y) cria coleções de vetores em linhas
+classe = "matrix"
+
+
+string = %s = texto = str(variavel a se transformar em texto)
+número = %d
+print(sprintf("eu sou %s e tenho %d anos", nome, idade) - criar textos com variaveis pre estabelecidas, coloca-las em ordem)
+
+- Tipos de Variáveis
+
+1. Números (10, 11, 12) 
+2. Booleanas (V,F) ou (TRUE, FALSE) 
+
+
+- Vetores:
+    
+    Podem ser usados para fazer operações, baseadas na posição de cada valor. Ao somar vetores, soma-se cada numero de um pelo do outro em sua respectiva posição. Se são utilizadas funções, elas são aplicadas a cada número do vetor separadamente. 
+
+v = c(lucas=4, ana=3, pedro=5) - atribui nomes a números 
+
+- Banco de Dados (data frame)
+
+    Guarda dados de tabelas
+getwd() = mostra o diretório onde se está
+setwd(diretório com \ ao invés de /) = muda o diretório onde se está trabalhando
+
+Pode-se colocar vetores de várias classes num dataframe, organizando-os
+
+Se está no Excel, é bom salvar o arquivo como .csv para colocar no R
+    
+read.csv = lê o banco de dados
+
+x = read.csv("meusdados.csv", sep=";", header = "TRUE", dec=",")
+    
+    separar os termos por ;
+    header = cabeçalho
+    dec = separador decimal
+
+x = data.frame(x, y, z (vetores))
+
+nrow(x) = mostra o numero de objetos do banco de dados
+ncol(x) = 
+
+y = read.table(file.choose(), sep = ";", dec = ",") = abre o explorador de arquivos para escolher os arquivos, qualquer extensão
+
+file.exists("meusdados.csv") = mostra se os dados existem no seu diretório
+
+x[linha, coluna] = seleciona uma linha e coluna especifica (é uma matriz). Se a linha ou coluna estiver em branco, são alterados todos os valores desta. 
+
+z = x[c(1:100,1] =  linhas de 1 a 100 da coluna 1 são armazenados em z
+
+colnames(dados) = mostra o nome das colunas
+
+attach(dados) = seleciona o banco de dados (attach = anexar). A partir daí, todos os comandos são direcionados a essa variável, e as colunas e linhas se tornam variáveis (como se tivessem sido salvas no script) e podem ser chamadas pelo nome. 
+
+x$(coluna ou linha) - chama a coluna ou linha como uma variável, sem precisar do attach.
+
+detach = desfixa o banco de dados 
+
+tapply(dados,grupos,função) = aplica uma função em grupos de dados. Ex: linha 3, coluna 2
+
+by(dados, grupos, função) = mesma ideia do tapply
+
+str = transforma classes de variáveis
+
+summary(dados) = mínimo, 1 quartil, etc...
+
+install.packages("fBasics") = permite a utilização da função BasicStats, que dá estatísticas melhores dos dados. 
+
+fBasics::basicStats(dados) = estatísticas dos dados
+
+head(dados, 3) = primeiras 3 linhas do banco de dados
+
+tail(dados, 4) = últimas 4 linhas do banco de dados
+
+! =  negação
+
+view(dados) = mostra os dados 
+
+which(temp>70) = escolher dados com uma restrição
+
+ifelse(x>10, x>2, x = 3) = se obedecer a restrição, seja >2. Se não, seja = 3
+
+---
+FUNÇÕES
+
+minha.função = function(x,y,z){corpo da função}
+    (x,y,z) = variáveis envolvidas
+    {corpo da função} = código que ela irá realizar
+
+for =  faz a função 
+
+
+Estatísticas: 
+
+cor() = coeficiente de correlação
+lm() = linear models = matriz de correlação
+---
+CARTEIRAS
+
+Tradeoff: investidor racional quer menos risco com mais retorno.
+
+Teoria das Carteiras: princípio que consiste na criação de um portfólio promissor, com maior tradeoff
+
+A ideia é reduzir a correlação entre ações, para reduzir risco.
+-1: ações se acompanham em direções opostas
+0: nenhuma correlação entre ações
+1: correlação parcelada
+
+Retorno de carteira: média dos retornos individuais
+
+Determinar carteiras: média-variância de Markowitz
+
+Portfólio de Variância Mínima: combinação de ativos com o risco mínimo
+Portfólio Tangente: maximiza o Índica de Sharpe, indicador de desempenho
+
+%*% = multiplicar matrizes
+paste() nomes para atribuir a gráficos
+apply(bancodedados,2,mean) =  aplica a média entre as 2 colunas do banco de dados
+solve() = inversa da matriz
+pie() = gráfico de torta (pizza)
+abs() = módulo
+rainbow() = cores do arco-íris
+DIM = LINHAS E COLUNAS
+
+par(mfrow=c(2,1)) 2 linhas em uma coluna
