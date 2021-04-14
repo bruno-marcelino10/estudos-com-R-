@@ -4,5 +4,5 @@ Muitos desses resumos são baseados nas aulas ministradas no curso "R for Data S
 
 Algumas aulas foram dadas pelo Luan na Liga de Controladoria e Finanças, e foram muito úteis para o meu aprendizado. 
 
-Além disso, incluí algumas "cheatsheets", que funcionam como folhas de resumo de todos os principais códigos que vêm inclusos em cada pacote (sobretudo os do Tidyverse).   
+Além disso, incluí algumas "cheatsheets", que funcionam como folhas de resumo de todas as principais funções que vêm inclusas em cada pacote (sobretudo as do Tidyverse).   
 
