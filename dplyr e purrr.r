@@ -16,6 +16,12 @@ media <- murders %>%
     group_by(region) %>% 
     summarize("media_pop" = mean(population)) 
 
+# summarize_all() <- é a aplicação de funções nas colunas, feita para retornar somente um valor (podem ser operações aritméticas normais, desde que retornem APENAS um valor).
+
+media <- murders %>% 
+    group_by(region) %>% 
+    summarize_all(funs(mean)) 
+
 # Caso seja necessário ter como output um vetor numérico com os resultados obtidos (ao invés de um tibble), podemos utilizar a função ".". No caso, a função final retornará um 
 # vetor com os resultados obtidos na coluna media_pop.
 
@@ -53,6 +59,7 @@ murders %>%
                              region == "South" ~ "South",
                              TRUE ~ "Other")) # O argumento TRUE representa a função "else"
 
+
 #### ---- purrr ---- ####
 
 # map() <- útil quando queremos aplicar uma mesma função a cada elemento de um vetor, e retornar uma lista de mesmo tamanho 
@@ -66,6 +73,8 @@ map(x, f)
 map_dbl(x, f) # retorna um vetor numérico
 map_chr(x, f) # retorna um vetor de caracteres 
 
+# caso estejamos trabalhando com listas dentro de outras listas (como se fosse uma matriz), podemos usar map(x, índice) para extrair o primeiro elemento de cada lista, 
+# assim como se estivéssemos trabalhando com dataframes.
 
 # map_if(vetor, condição, função) <- aplica a função caso algo aconteça
 
@@ -74,7 +83,5 @@ map_if(x, x > 2, f)
 # map_at(vetor, posições, função) <- aplica a função em determinadas posições do vetor
 
 map_at(x, c(1:3), f)
-
-
 
 
