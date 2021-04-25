@@ -44,11 +44,9 @@ murders %>% arrange(total)
 murders %>% arrange(desc(total))
 
 # Podemos ordenar a partir de outra ordenação 
-
 murders %>% arrange(region, total) # ordena pela região, e dentro da categoria ordena pelo total
 
 # top_n() <- mostra as n maiores observações para determinada característica
-
 murders %>% top_n(5, total) # ordena pelo total, e demonstra as 5 maiores observações 
 
 # case_when() <- permite realizar testes lógicos com diversas variáveis condicionais (evita escrever ifelse dentro de ifelse)
@@ -58,6 +56,16 @@ murders %>%
                              abb %in% c("WA", "OR", "CA") ~ "West Coast",
                              region == "South" ~ "South",
                              TRUE ~ "Other")) # O argumento TRUE representa a função "else"
+
+# do() <- aplica uma função a cada grupo de um tibble. 
+
+my_summary <- function(dat){
+    x <- quantile(dat$height, c(0, 0.5, 1)) # summary retornaria três respostas para a mesma função 
+    tibble(min = x[1], median = x[2], max = x[3])} # criamos nosso próprio sumário
+
+heights %>%
+    group_by(sex) %>% # agrupa pelo fator sexo
+    do(my_summary(.)) # gera o sumário para cada fator, não só para a coluna toda
 
 
 #### ---- purrr ---- ####

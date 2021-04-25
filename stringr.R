@@ -160,7 +160,7 @@ str_trim(string = murders$population, # vetor que contém os dados
 str_c(murders$population, murders$abb, # colunas a serem unidas
       sep = "_") # separador entre os elementos das colunas que serão concatenados
 
-# o argumento 'collapse = "" ' permite juntar o vetor inteiro de strings em uma só. 
+# o argumento ' collapse = "" ' permite juntar o vetor inteiro de strings em uma só. 
 
 str_c(murders$population, murders$abb,
       sep = "_", # separa o argumento de cada coluna que será unida
