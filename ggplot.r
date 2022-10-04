@@ -90,19 +90,19 @@ heights %>% ggplot() +
                    col = "black") # Cor da borda das colunas
     
 # DENSIDADE
-heights %>% ggplot() +
+heights %>% ggplot() + 
     geom_density(aes(height), fill = 2) # fill = cor do preenchimento
 
 # QQ-PLOT
 heights %>% ggplot() +
-    geom_qq(aes(sample = scale(height))) +# scale padroniza a amostra
+    geom_qq(aes(sample = scale(height))) + # scale padroniza a amostra
     geom_abline() # adiciona linha com intercepto 0 e inclinação 1
 
 # Nesse caso podemos utilizar a função dparams (dentro da geometria porém fora do aes) para definir os parâmetros da distribuição da amostra em c(media, sd).
 
 # BARRAS 
 
-heights %>% ggplot() +
+heights %>% ggplot() + 
     geom_bar(aes(sex)) 
 
 
