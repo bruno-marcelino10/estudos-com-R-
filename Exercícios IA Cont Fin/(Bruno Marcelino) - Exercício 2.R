@@ -87,23 +87,18 @@ print(painel_capm)
 ggsave("painel_capm.png", plot = painel_capm)
 
 ### --- Cálculo do Beta de Cada Ativo --- ###
-lm_CMIG <- lm(retornos$CEMIG ~ retornos$IBOVESPA)
-lm_GGBR <- lm(retornos$GERDAU ~ retornos$IBOVESPA)
-lm_PETR <- lm(retornos$PETROBRAS ~ retornos$IBOVESPA)
-lm_BBAS <- lm(retornos$BB ~ retornos$IBOVESPA)
-
-beta_CMIG <- summary(lm_CMIG)$coefficients[2]
-beta_GGBR <- summary(lm_GGBR)$coefficients[2]
-beta_PETR <- summary(lm_PETR)$coefficients[2]
-beta_BBAS <- summary(lm_BBAS)$coefficients[2]
+beta_CMIG <- cov(retornos$IBOVESPA, retornos$CEMIG) / var(retornos$IBOVESPA)
+beta_GGBR <- cov(retornos$IBOVESPA, retornos$GERDAU) / var(retornos$IBOVESPA)
+beta_PETR <- cov(retornos$IBOVESPA, retornos$PETROBRAS) / var(retornos$IBOVESPA)
+beta_BBAS <- cov(retornos$IBOVESPA, retornos$BB) / var(retornos$IBOVESPA)
 
 ### --- Cálculo do Ke (Custo de Capital Próprio) de Cada Ativo --- ###
 # Retorno de Mercado = 26,64803%
 # Retorno do Ativo Livre de Risco = 5,875%
-Ke_CMIG <- 0.5875 + (beta_CMIG * 0.2664803)
-Ke_GGBR <- 0.5875 + (beta_GGBR * 0.2664803)
-Ke_PETR <- 0.5875 + (beta_PETR * 0.2664803)
-Ke_BBAS <- 0.5875 + (beta_BBAS * 0.2664803)
+Ke_CMIG <- 0.05875 + (beta_CMIG * (0.2664803-0.05875))
+Ke_GGBR <- 0.05875 + (beta_GGBR * (0.2664803-0.05875))
+Ke_PETR <- 0.05875 + (beta_PETR * (0.2664803-0.05875))
+Ke_BBAS <- 0.05875 + (beta_BBAS * (0.2664803-0.05875))
 
 ### --- Tabela com Custo de Capital Próprio de Cada Ativo --- ###
 Ke = c(Ke_CMIG, Ke_GGBR, Ke_PETR, Ke_BBAS)
