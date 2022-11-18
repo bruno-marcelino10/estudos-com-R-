@@ -14,7 +14,6 @@
 # Lembre-se de comentar bem o código.
 
 ### --- Importação dos Pacotes --- ###
-library("tidyverse")
 library("Metrics") # accuracy()
 library("class") # knn()
 
@@ -33,6 +32,18 @@ y_test = dados[(n_obs_train+1):n_obs, 7]
 
 ### --- Definindo Função --- ###
 modelo = function(k, X_train, y_train, X_test, y_test){
+    
+    # -- Argumentos 
+    # k: número de modelos criados, em ordem crescente a partir de k = 1
+    # X_train: valores observados p/ as variáveis independentes no conjunto de treinamento
+    # y_train: valores observados p/ a variável dependente no conjunto de treinamento
+    # X_test: valores observados p/ as variáveis independentes no conjunto de teste
+    # y_test: valores observados p/ a variável dependente no conjunto de teste
+    
+    # -- Saída
+    # A) Acurácia de cada modelo criado alterando o valor do K
+    # B) Valor de K que maximiza a acurácia do modelo KNN
+    
     k = seq(k)
     accuracies = vector()
     for(i in k){
@@ -45,7 +56,7 @@ modelo = function(k, X_train, y_train, X_test, y_test){
     print(paste("Melhor Modelo: k =", which(accuracies %in% max(accuracies))[1]))
 }
 
-modelo(k, X_train, y_train, X_test, y_test)
+modelo(10, X_train, y_train, X_test, y_test)
 
     
     
