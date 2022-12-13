@@ -31,7 +31,7 @@ library("gridExtra")
 # Importa dados do Yahoo Finance
 dados <- "BBDC4.SA" %>% 
     tq_get(get = "stock.prices", from = "2010-01-01", to = "2019-12-31") %>% 
-    na.locf() %>% 
+    na.omit() %>% 
     select(-c(symbol))
 
 # Análise Gráfica: Preço do Ativo
@@ -54,29 +54,45 @@ dados %>% mutate("retorno" = (close/lag(close))-1) %>% # Calculando Retorno do A
 
 ### --- Criação das Variáveis --- ###
 
-##### Variáveis Criadas: 
-# Média-Móvel do Preço
-# 2 Desvios-Padrões Acima e Abaixo do Preço
-# Índice de Força Relativa da Ação
-# SAR Parabólico
+##### Variáveis Criadas: (ta_mutate_fun_options()) 
+# Variação da Média-Móvel de 10 Períodos do Preço - Medida da tendência acumulada até hoje
+# Volatilidade Média de 10 Períodos do Preço - Medida da volatilidade acumulada até hoje
+# Índice de Força Relativa da Ação - Medida de Sobrecompra ou Sobrevenda do Ativo
+# Distância entre o SAR Parabólico e o Preço - Medida da força da tendência 
 
-##### Alvo Previsto: Direção do Preço
+# Obs.: Todos os dados foram transformados para que se tornem osciladores estacionários em teoria. 
+# Se seu valor aumenta quando o preço da ação aumenta, não fazem o menor sentido em um modelo real.
+
+##### Alvo Previsto: Direção do Preço do Dia de Amanhã
 # 0 - Baixa
 # 1 - Alta
 
 variaveis <- dados %>% 
-    tq_mutate(select = "close", mutate_fun = RSI, col_rename = "RSI") %>% # Índice de Força Relativa
-    tq_mutate(select = "close", mutate_fun = BBands) %>% # Bandas de Bollinger
+    
+    # Variáveis
+    tq_mutate(select = "close", mutate_fun = SMA, col_rename = "mm10") %>% # Média-Móvel
+    tq_mutate(select = "close", mutate_fun = volatility, col_rename = "vol") %>% # Volatilidade
+    tq_mutate(select = "close", mutate_fun = RSI) %>% # Índice de Força Relativa
     tq_mutate(select = c(high, low), mutate_fun = SAR) %>% # SAR Parabólico
-    mutate("retorno" = (close/lag(close))-1) %>% # Retorno do Ativo
-    mutate("direcao" = ifelse(retorno >= 0, 1, 0)) %>% # Alvo
-    mutate("direcao" = as.factor(direcao)) %>% # Transforma o alvo em variável categórica
-    select(-c(open, high, low, close, adjusted, volume, pctB)) %>% # Apagando colunas que não serão utilizadas
+    
+    # Manipulação das Variáveis
+    mutate("sar" = sar - close) %>% # Distância entre o SAR e o Preço
+    
+    # Manipulação do Alvo
+    mutate("retorno" = (close/lag(close))-1) %>% # Retorno do Ativo Hoje
+    
+    mutate("dir" = ifelse(retorno >= 0, 1, 0)) %>% # Direção do Preço de Hoje
+    mutate("dir" = as.factor(dir)) %>% # Transforma o alvo em variável categórica
+    
+    mutate("dir" = lag(dir)) %>% # Atrasa o Alvo para que seja previsto o retorno de amanhã com dados de hoje
+    mutate("retorno" = lag(retorno)) %>% # Atrasa o retorno para que a previsão seja comparada com o retorno de real de amanhã
+    
+    select(-c(open, high, low, close, adjusted, volume)) %>% # Apagando colunas que não serão mais utilizadas
     na.omit() # Apaga NA's
     
 ### --- Separação Treinamento e Teste --- ###
 split = 0.6 # Série temporal deve ser dividida preservando a ordem dos dados
-n_obs = length(variaveis$RSI) 
+n_obs = length(variaveis$date) 
 n_obs_train = round(split*n_obs, 0)
 
 train = variaveis[1:n_obs_train,]
@@ -84,16 +100,20 @@ test = variaveis[(n_obs_train+1):n_obs,]
 
 ### --- Modelagem --- ###
 set.seed(123) # Garantindo que o mesmo modelo sempre seja criado 
-modelo = randomForest(direcao ~ RSI + dn + mavg + up + sar, data = train, na.action=na.omit) # Cria o modelo
-previsoes = predict(modelo, select(test, -c(direcao, date, retorno))) # Coluna de Valores Previstos
+modelo = randomForest(dir ~ mm10 + vol + rsi + sar, data = train, na.action=na.omit) # Cria o modelo
+previsoes = predict(modelo, select(test, -c(dir, date, retorno))) # Coluna de Valores Previstos
 
 ### --- Avaliação --- ###
-acc = accuracy(test$direcao, previsoes) # Acurácia do Modelo
-auc = auc(test$direcao, previsoes) # Área Abaixo da Curva ROC do Modelo
-conf_matrix = table("previsto" = previsoes, "observado" = test$direcao) # Matriz de Confusão do Modelo
+acc = accuracy(test$dir, previsoes) # Acurácia do Modelo
+auc = auc(test$dir, previsoes) # Área Abaixo da Curva ROC do Modelo
+conf_matrix = table("previsto" = previsoes, "observado" = test$dir) # Matriz de Confusão do Modelo
+imp = importance(modelo) # Qualidade de Cada Variável no Modelo
+imp = imp / sum(imp) # Qualidade Relativa
 
 print(paste("Acurácia =", acc)) 
 print(paste("Área Abaixo da Curva ROC =", auc)) 
+print("Importância Relativa de Cada Variável:")
+print(imp)
 print("Matriz de Confusão:")
 print(conf_matrix)
 
@@ -102,7 +122,7 @@ print(conf_matrix)
 # Consiste em avaliar o desempenho do modelo na base de teste (aqui desconsiderados os custos de transação).
 # Compramos o ativo caso o modelo indique alta, e vendemos caso indique baixa
 backtest <- test %>% 
-    select(date, retorno, "observado" = direcao) %>% 
+    select(date, retorno, "observado" = dir) %>% 
     mutate("previsto" = previsoes) %>% 
     mutate("resultado" = ifelse(previsto == 1, retorno, -retorno)) %>% 
     mutate("cum_ret" = cumprod(1 + retorno)-1) %>% 
@@ -111,8 +131,8 @@ backtest <- test %>%
     
 # Análise Gráfica: Retorno Acumulado do Modelo
 ret_acum = backtest %>% ggplot() +
-    geom_line(aes(x = date, y = cum_ret_mod), color = "red", size = 1) +
-    geom_line(aes(x = date, y = cum_ret), color = "blue", size = 1) +
+    geom_line(aes(x = date, y = cum_ret_mod), color = "red", linewidth = 1) +
+    geom_line(aes(x = date, y = cum_ret), color = "blue", linewidth = 1) +
     labs(x = "Ano", y = "Retorno Acumulado",
          title = 'Comparação entre o desempenho do Modelo e de uma estratégia "Buy & Hold"',
          caption = "BH: Azul; Modelo: Vermelho") +  
@@ -124,7 +144,7 @@ ret_acum = backtest %>% ggplot() +
 # o modelo apresenta ganhos constantes sem muita volatilidade na queda)
 dd = backtest %>% 
     ggplot(aes(x = date, y = drawdown)) +
-    geom_area(size = 1, fill = "darkblue") +
+    geom_area(linewidth = 1, fill = "darkblue") +
     labs(title = "Drawdown", x = "", y = "") +
     theme_tq() +
     scale_y_continuous(labels = scales::percent)
